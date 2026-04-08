@@ -1,0 +1,81 @@
+class ParkingManagementSystem:
+    def __init__(self, total_spots=50):
+        self.total_spots = total_spots
+        self.available_spots = total_spots
+        self.parked_vehicles = {}
+        self.step = 1
+    
+    def display_menu(self):
+        print("\n=== Parking Management System ===")
+        print("1. Check Available Spots")
+        print("2. Park Vehicle")
+        print("3. Unpark Vehicle")
+        print("4. View All Parked Vehicles")
+        print("5. Exit")
+    
+    def park_vehicle(self):
+        if self.available_spots <= 0:
+            print("Sorry, parking lot is full!")
+            return
+        
+        vehicle_number = input("Enter vehicle number: ")
+        owner_name = input("Enter owner name: ")
+        vehicle_type = input("Enter vehicle type (Car/Bike): ")
+        
+        if vehicle_number in self.parked_vehicles:
+            print("Vehicle already parked!")
+            return
+        
+        self.parked_vehicles[vehicle_number] = {
+            "owner": owner_name,
+            "type": vehicle_type
+        }
+        self.available_spots -= 1
+        print(f"✓ Vehicle parked successfully! Remaining spots: {self.available_spots}")
+    
+    def unpark_vehicle(self):
+        vehicle_number = input("Enter vehicle number to unpark: ")
+        
+        if vehicle_number in self.parked_vehicles:
+            del self.parked_vehicles[vehicle_number]
+            self.available_spots += 1
+            print(f"✓ Vehicle unparked successfully! Available spots: {self.available_spots}")
+        else:
+            print("Vehicle not found!")
+    
+    def view_available_spots(self):
+        print(f"\nTotal spots: {self.total_spots}")
+        print(f"Available spots: {self.available_spots}")
+        print(f"Occupied spots: {self.total_spots - self.available_spots}")
+    
+    def view_all_vehicles(self):
+        if not self.parked_vehicles:
+            print("No vehicles parked!")
+            return
+        
+        print("\n=== Parked Vehicles ===")
+        for vehicle_num, details in self.parked_vehicles.items():
+            print(f"Vehicle: {vehicle_num} | Owner: {details['owner']} | Type: {details['type']}")
+    
+    def run(self):
+        while True:
+            self.display_menu()
+            choice = input("\nEnter your choice (1-5): ")
+            
+            if choice == "1":
+                self.view_available_spots()
+            elif choice == "2":
+                self.park_vehicle()
+            elif choice == "3":
+                self.unpark_vehicle()
+            elif choice == "4":
+                self.view_all_vehicles()
+            elif choice == "5":
+                print("Thank you for using Parking Management System!")
+                break
+            else:
+                print("Invalid choice! Please try again.")
+
+if __name__ == "__main__":
+    system = ParkingManagementSystem(total_spots=50)
+    system.run()
