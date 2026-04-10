@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .stat {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .label {
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .booking-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .parking-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .slot {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .slot.available {
+            background: #4caf50;
+            color: white;
+            border-color: #45a049;
+        }
+        .slot.booked {
+            background: #f44336;
+            color: white;
+            border-color: #da190b;
+            cursor: not-allowed;
+        }
+        .slot:hover.available {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🅿️ Parking Management System</h1>
+            <p>Manage and book parking spaces efficiently</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="card">
+                <div class="stat" id="totalSlots">50</div>
+                <div class="label">Total Slots</div>
+            </div>
+            <div class="card">
+                <div class="stat" id="availableSlots">35</div>
+                <div class="label">Available Slots</div>
+            </div>
+            <div class="card">
+                <div class="stat" id="bookedSlots">15</div>
+                <div class="label">Booked Slots</div>
+            </div>
+        </div>
+
+        <div class="booking-form">
+            <h2>Book a Parking Slot</h2>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="vehicleNumber">Vehicle Number</label>
+                    <input type="text" id="vehicleNumber" placeholder="e.g., ABC-1234" required>
+                </div>
+                <div class="form-group">
+                    <label for="ownerName">Owner Name</label>
+                    <input type="text" id="ownerName" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" placeholder="Enter phone number" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (hours)</label>
+                    <input type="number" id="duration" min="1" placeholder="1" required>
+                </div>
+                <button type="submit">Book Slot</button>
+            </form>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">Available Slots</h3>
+            <div class="parking-slots" id="parkingSlots"></div>
+        </div>
+    </div>
+
+    <script>
+        const totalSlots = 50;
+        let bookedSlots = [];
+
+        function initializeSlots() {
+            const slotsContainer = document.getElementById('parkingSlots');
+            slotsContainer.innerHTML = '';
+            for (let i = 1; i <= totalSlots; i++) {
+                const slot = document.createElement('div');
+                slot.className = bookedSlots.includes(i) ? 'slot booked' : 'slot available';
+                slot.textContent = `P${i}`;
+                slot.onclick = () => selectSlot(i, slot);
+                slotsContainer.appendChild(slot);
+            }
+            updateStats();
+        }
+
+        function selectSlot(slotNumber, slotElement) {
+            if (slotElement.classList.contains('available')) {
+                document.getElementById('vehicleNumber').focus();
+                document.getElementById('slotNumber') = slotNumber;
+            }
+        }
+
+        function updateStats() {
+            const available = totalSlots - bookedSlots.length;
+            document.getElementById('availableSlots').textContent = available;
+            document.getElementById('bookedSlots').textContent = bookedSlots.length;
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Booking submitted! Please complete payment to confirm.');
+            this.reset();
+        });
+
+        initializeSlots();
+    </script>
+</body>
+</html>
